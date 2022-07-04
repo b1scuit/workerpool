@@ -8,7 +8,7 @@ import (
 	"github.com/B1scuit/workerpool"
 )
 
-var mockError = errors.New("mock error")
+var errMock = errors.New("mock error")
 
 // An example worker function
 func Fib(n int) int {
@@ -18,26 +18,35 @@ func Fib(n int) int {
 	return Fib(n-1) + Fib(n-2)
 }
 
-/*
-func TestMain(m *testing.M) {
-	client, _ = workerpool.New(&workerpool.ClientOptions{
-		WorkerFunc: workerFunction,
-	})
-
-	m.Run()
+func BenchmarkWorker1(b *testing.B) {
+	benchmarkWaitGroup(1, b)
 }
-*/
+func BenchmarkWorker2(b *testing.B) {
+	benchmarkWaitGroup(2, b)
+}
+func BenchmarkWorker5(b *testing.B) {
+	benchmarkWaitGroup(5, b)
+}
+func BenchmarkWorker10(b *testing.B) {
+	benchmarkWaitGroup(10, b)
+}
+func BenchmarkWorker20(b *testing.B) {
+	benchmarkWaitGroup(20, b)
+}
+func BenchmarkWorker50(b *testing.B) {
+	benchmarkWaitGroup(50, b)
+}
 
-func BenchmarkWaitGroup(b *testing.B) {
+func benchmarkWaitGroup(num int, b *testing.B) {
 	var workerFunction workerpool.TaskFunc = func(t *workerpool.Task) {
-		t.Output <- Fib(40)
+		t.Output <- Fib(10)
 		close(t.Output)
 	}
 
 	var wg sync.WaitGroup
 
 	client := workerpool.Must(workerpool.New(&workerpool.ClientOptions{
-		Workers:    10,
+		Workers:    num,
 		WorkerFunc: workerFunction,
 	}))
 
@@ -88,7 +97,7 @@ func TestMustPanic(t *testing.T) {
 		}
 	}()
 
-	workerpool.Must(nil, mockError)
+	workerpool.Must(nil, errMock)
 }
 
 func TestAddTask(t *testing.T) {
