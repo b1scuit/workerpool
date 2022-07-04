@@ -18,6 +18,9 @@ type Client struct {
 
 func worker(name int, taskQueue <-chan *Task, workerFunc TaskFunc) {
 	for {
+		// Instead of passing a worker function, you can just put
+		// whatever needs to be done in this loop, I use a worker function
+		// as it makes this library more portable
 		workerFunc(<-taskQueue)
 	}
 }

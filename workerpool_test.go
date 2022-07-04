@@ -25,21 +25,21 @@ func BenchmarkWorker2(b *testing.B) {
 	benchmarkWaitGroup(2, b)
 }
 func BenchmarkWorker5(b *testing.B) {
-	benchmarkWaitGroup(5, b)
+	benchmarkWaitGroup(3, b)
 }
 func BenchmarkWorker10(b *testing.B) {
-	benchmarkWaitGroup(10, b)
+	benchmarkWaitGroup(4, b)
 }
 func BenchmarkWorker20(b *testing.B) {
-	benchmarkWaitGroup(20, b)
+	benchmarkWaitGroup(5, b)
 }
 func BenchmarkWorker50(b *testing.B) {
-	benchmarkWaitGroup(50, b)
+	benchmarkWaitGroup(10, b)
 }
 
 func benchmarkWaitGroup(num int, b *testing.B) {
 	var workerFunction workerpool.TaskFunc = func(t *workerpool.Task) {
-		t.Output <- Fib(10)
+		t.Output <- Fib(20)
 		close(t.Output)
 	}
 
