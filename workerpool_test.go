@@ -130,6 +130,12 @@ func Example() {
 		Input:  nil,
 		Output: output,
 	})
+
+	// Be careful here as there is nothing blocking the application exit
+	// you will need to hold the main execution path open until all tasks
+	// have completed, this is not an issue around a persistant service
+	// however if you are using this in a non persistant application
+	// you will need to use a sync.WaitGroup (See other example)
 }
 
 // In instances where you need to retrieve the responses, this can be used
