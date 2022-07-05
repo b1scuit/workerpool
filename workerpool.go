@@ -35,6 +35,10 @@ func worker(name int, taskQueue <-chan *Task, workerFunc TaskFunc) {
 	}
 }
 
+// Creates and initalised a new instance of the package
+//
+// From here you have a established worker pool and a structure
+// to manage input to the worker pool
 func New(opts *ClientOptions) (*Client, error) {
 
 	// Default to 3 workers

@@ -112,3 +112,57 @@ func TestAddTask(t *testing.T) {
 
 	client.Add(&workerpool.Task{})
 }
+
+func Example() {
+
+	var basicWorkerFunction = func(t *workerpool.Task) {
+		t.Output <- true // Just mark the task complete
+	}
+
+	client := workerpool.Must(workerpool.New(&workerpool.ClientOptions{
+		Workers:    5,                   // The number of desired workers
+		WorkerFunc: basicWorkerFunction, // The desired worker function
+	}))
+
+	// Add a task to the queue
+	output := make(chan any, 1)
+	client.Add(&workerpool.Task{
+		Input:  nil,
+		Output: output,
+	})
+}
+
+// In instances where you need to retrieve the responses, this can be used
+// with a waitgroup
+func Example_withWaitgroup() {
+	var basicWorkerFunction = func(t *workerpool.Task) {
+		t.Output <- true // Just mark the task complete
+	}
+
+	var taskList []string
+
+	client := workerpool.Must(workerpool.New(&workerpool.ClientOptions{
+		Workers:    5,                   // The number of desired workers
+		WorkerFunc: basicWorkerFunction, // The desired worker function
+	}))
+
+	var wg sync.WaitGroup
+	for _, task := range taskList {
+
+		// For each task in the list, add to the pool and wait for a response
+		go func(wg *sync.WaitGroup, data string) {
+			defer wg.Done()
+
+			output := make(chan any, 1)
+
+			client.Add(&workerpool.Task{
+				Input:  data,
+				Output: output,
+			})
+
+			<-output // Do something with this value if needed
+		}(&wg, task)
+	}
+
+	wg.Wait() // Wait for all tasks to complete
+}
