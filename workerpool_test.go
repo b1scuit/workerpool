@@ -154,6 +154,7 @@ func Example_withWaitgroup() {
 
 	var wg sync.WaitGroup
 	for _, task := range taskList {
+		wg.Add(1)
 
 		// For each task in the list, add to the pool and wait for a response
 		go func(wg *sync.WaitGroup, data string) {
